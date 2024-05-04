@@ -1,0 +1,15 @@
+{
+  "GUILDS": [
+    {
+      "key exemple": {
+        "ID": "01254851201548525442",
+        "NAME": "Test Server",
+        "DATE": "2021-01-01T00:00:00.000Z",
+        "OWNER": {
+          "ID": "52015258499919",
+          "NAME": "Test Owner"
+        }
+      }
+    }
+  ]
+}
