@@ -1,80 +1,92 @@
-const Discord = require('discord.js');
+const { PermissionsBitField } = require('discord.js');
+const { createSuperBanEmbed } = require('../Helpers/Embeds');
 
 module.exports = {
 	name: 'superban',
 	description: 'Ban a user with additional options',
 	dm: false,
-	permissions: 'NONE',
-	// options: [
-	// 	{
-	// 		name: 'user',
-	// 		description: 'The user to ban',
-	// 		type: 'USER',
-	// 		required: true,
-	// 	},
-	// 	{
-	// 		name: 'reason',
-	// 		description: 'The reason for the ban',
-	// 		type: 'STRING',
-	// 		required: true,
-	// 	},
-	// 	{
-	// 		name: 'duration',
-	// 		description: 'The ban duration',
-	// 		type: 'STRING',
-	// 		required: true,
-	// 	},
-	// 	{
-	// 		name: 'permanent',
-	// 		description: 'Whether the ban is permanent',
-	// 		type: 'BOOLEAN',
-	// 		required: false,
-	// 	},
-	// ],
-	execute(message, args) {
+	options: [
+		{
+			name: 'user',
+			description: 'The user to ban',
+			type: 'USER',
+			required: true,
+		},
+		{
+			name: 'reason',
+			description: 'The reason for the ban',
+			type: 'STRING',
+			required: true,
+		},
+		{
+			name: 'duration',
+			description: 'The ban duration',
+			type: 'STRING',
+			required: true,
+		},
+	],
+	async execute(interaction) {
 		// Check if the user has the necessary permissions to use this command
-		if (!message.member.hasPermission('BAN_MEMBERS')) {
-			return message.reply('You do not have permission to use this command.');
+		if (
+			!interaction.member.permissions.has(PermissionsBitField.Flags.BanMembers)
+		) {
+			return interaction.reply(
+				'You do not have permission to use this command.',
+			);
 		}
 
 		// Check if the command has the correct number of arguments
-		if (args.length < 3) {
-			return message.reply(
+		if (interaction.options.length < 3) {
+			return interaction.reply(
 				'Please provide the user, reason, and ban duration.',
 			);
 		}
 
-		// Parse the command arguments
-		const user = message.mentions.users.first();
-		const reason = args[1];
-		const time = args[2];
-		const isPermanent = args[3] === 'forever';
-
 		// Check if the user is valid
-		if (!user) {
-			return message.reply('Please mention a valid user to ban.');
+		if (!interaction.options.getUser('user')) {
+			return interaction.reply('Please mention a valid user to ban.');
 		}
 
-		// Create the ban embed
-		const banEmbed = new Discord.MessageEmbed()
-			.setColor('#ff0000')
-			.setTitle('User Banned')
-			.setDescription(
-				`User: ${user}\nReason: ${reason}\nDuration: ${
-					isPermanent ? 'Permanent' : time
-				}`,
-			);
-
 		// Ban the user
-		message.guild.members
-			.ban(user, { reason: reason })
-			.then(() => {
-				// Send the ban embed
-				message.channel.send(banEmbed);
+		await interaction.options
+			.getUser('user')
+			.send({
+				content: `You have been banned from ${
+					interaction.guild.name
+				} for ${interaction.options.getString(
+					'duration',
+				)}. Reason: ${interaction.options.getString('reason')}`,
 			})
-			.catch(error => {
-				console.error(`Failed to ban user: ${error}`);
-				message.reply('Failed to ban the user.');
+			.then(() => {
+				interaction.guild.members
+					.ban(interaction.options.getUser('user'), {
+						reason: interaction.options.getString('reason'),
+					})
+					.then(() => {
+						interaction.reply({
+							embeds: [
+								createSuperBanEmbed(
+									interaction.options.getUser('user'),
+									interaction.options.getString('reason'),
+									interaction.options.getString('duration'),
+								),
+							],
+						});
+					})
+					.catch(error => {
+						console.error(`Failed to ban user: ${error}`);
+						interaction.reply({
+							content: `Failed to ban user: ${error}`,
+							ephemeral: true,
+						});
+					});
+			})
+			.catch(() => {
+				return interaction.reply({
+					content:
+						'Failed to send a message to the user, the user has not been banned',
+					ephemeral: true,
+				});
 			});
 	},
 };
