@@ -1,5 +1,8 @@
 const Discord = require('discord.js');
 
+/**
+ * Command to test the bot's latency
+ */
 module.exports = {
 	name: 'ping',
 	description: 'Ping!',
