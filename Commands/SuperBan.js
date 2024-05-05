@@ -1,5 +1,5 @@
 const { PermissionsBitField } = require('discord.js');
-const { createSuperBanEmbed } = require('../Helpers/Embeds');
+const { createSuperBanEmbed } = require(global.HELPERS + 'Embeds');
 
 module.exports = {
 	name: 'superban',
@@ -26,6 +26,8 @@ module.exports = {
 		},
 	],
 	async execute(interaction) {
+		// if (checkSuperMode(interaction)) return;
+
 		// Check if the user has the necessary permissions to use this command
 		if (
 			!interaction.member.permissions.has(PermissionsBitField.Flags.BanMembers)

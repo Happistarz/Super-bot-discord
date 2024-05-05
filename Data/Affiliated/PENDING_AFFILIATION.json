@@ -1,15 +1,3 @@
 {
-  "GUILDS": [
-    {
-      "KEY": "",
-      "GUILD_ID": "1236290471928795176",
-      "GUILD_NAME": "Super test",
-      "REASON": "ghvngfghjff",
-      "DATE": "2024-05-05",
-      "REFEREE": {
-        "ID": "271300661646196737",
-        "NAME": "ben7821"
-      }
-    }
-  ]
+  "GUILDS": []
 }

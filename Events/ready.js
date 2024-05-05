@@ -1,4 +1,4 @@
-const SlashCommandsLoader = require('../Loaders/SlashCommandsLoader');
+const SlashCommandsLoader = require(global.LOADERS + 'SlashCommandsLoader');
 const { ActivityType } = require('discord.js');
 
 /**

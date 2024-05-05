@@ -40,7 +40,7 @@ module.exports = {
 		const reason = interaction.fields.getTextInputValue('reason');
 
 		let data = JSON.parse(
-			fs.readFileSync('./Data/Affiliated/PENDING_AFFILIATION.json'),
+			fs.readFileSync(global.DATA_AFFILIATED + 'PENDING_AFFILIATION.json'),
 		);
 
 		data.GUILDS.push({
@@ -48,6 +48,7 @@ module.exports = {
 			GUILD_ID: interaction.guild.id,
 			GUILD_NAME: interaction.guild.name,
 			REASON: reason,
+			MEMBER_COUNT: interaction.guild.memberCount,
 			DATE: new Date().toISOString().split('T')[0],
 			REFEREE: {
 				ID: referee.id,
@@ -56,7 +57,7 @@ module.exports = {
 		});
 
 		fs.writeFileSync(
-			'./Data/Affiliated/PENDING_AFFILIATION.json',
+			global.DATA_AFFILIATED + 'PENDING_AFFILIATION.json',
 			JSON.stringify(data, null, 2),
 		);
 

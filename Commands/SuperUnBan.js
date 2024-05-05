@@ -1,5 +1,5 @@
 const { PermissionsBitField } = require('discord.js');
-const { createSuperUnbanEmbed } = require('../Helpers/Embeds');
+const { createSuperUnbanEmbed } = require(global.HELPERS + 'Embeds');
 
 module.exports = {
 	name: 'superunban',

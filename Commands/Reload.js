@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 
-const { createInfoEmbed } = require('../Helpers/Embeds');
+const { createInfoEmbed } = require(global.HELPERS + 'Embeds');
 
 module.exports = {
 	name: 'reload',

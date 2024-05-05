@@ -6,11 +6,11 @@ const fs = require('fs');
  */
 module.exports = async bot => {
 	// Read all files in the Commands folder
-	fs.readdirSync('./Commands')
+	fs.readdirSync(global.COMMANDS)
 		.filter(f => f.endsWith('.js'))
 		.forEach(file => {
 			// Import the command
-			const command = require(`../Commands/${file}`);
+			const command = require(global.COMMANDS + file);
 
 			if (!command.name || typeof command.name !== 'string')
 				throw new Error(`Command ${file} does not have a name!`);

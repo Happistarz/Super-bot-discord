@@ -1,0 +1,13 @@
+{
+  "COMMANDS": "/Commands/",
+  "EVENTS": "/Events/",
+  "HELPERS": "/Helpers/",
+  "LOADERS": "/Loaders/",
+  "MODALS": "/Modals/",
+  "SUPER_EVENTS": "/Super/Events/",
+  "SUPER_FUNCTIONS": "/Super/Functions/",
+  "DATA_AFFILIATED": "/Data/Affiliated/",
+  "DATA_AFFILIATED_HISTORY": "/Data/Affiliated/History/",
+  "DATA_USER_BAN": "/Data/User/Ban/",
+  "DATA_USER_HISTORY": "/Data/User/History/"
+}
