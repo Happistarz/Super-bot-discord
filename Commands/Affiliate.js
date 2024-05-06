@@ -15,6 +15,12 @@ module.exports = {
 			type: 'USER',
 			required: true,
 		},
+		{
+			name: 'log_channel',
+			description: 'The channel to send the logs to',
+			type: 'CHANNEL',
+			required: true,
+		}
 	],
 	async execute(interaction) {
 		const affiliateModal = new Discord.ModalBuilder()
@@ -49,6 +55,7 @@ module.exports = {
 			GUILD_NAME: interaction.guild.name,
 			REASON: reason,
 			MEMBER_COUNT: interaction.guild.memberCount,
+			LOG_CHANNEL: interaction.options.getChannel('log_channel').id,
 			DATE: new Date().toISOString().split('T')[0],
 			REFEREE: {
 				ID: referee.id,
