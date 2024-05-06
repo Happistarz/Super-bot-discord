@@ -1,25 +1,24 @@
-const fs = require('fs');
-const { getBanUserFile, writeBanUserFile } = require(global.SUPER_FUNCTIONS +
-	'BanFileHandler');
+const fs = require("fs");
+const fileHandler = require(global.SUPER_FUNCTIONS + "BanFileHandler");
 const { banDataDecrypt } = require(global.SUPER_FUNCTIONS +
-	'BanDataSerializer');
+  "BanDataSerializer");
 
-export default function onMemberJoinEvent(interaction) {
-	const user = interaction.user;
+module.exports = {
+  onMemberJoinEvent(member) {
+    const data = fileHandler.getBanUserFile(member.id);
 
-	const data = getBanUserFile(user.id);
+    if (fileHandler.findIndexById(member.id) !== -1) {
+      const bannedData = data.BANS[fileHandler.findIndexById(member.id)];
+      const bannedDataDecrypted = banDataDecrypt(bannedData);
 
-	if (data.BANS[user.id]) {
-		const bannedData = data.BANS[user.id];
-		const bannedDataDecrypted = banDataDecrypt(bannedData);
-
-		if (new Date(bannedDataDecrypted.DATE) <= new Date()) {
-			delete data.BANS[user.id];
-			writeBanUserFile(user.id, data);
-		} else {
-			interaction.guild.members.ban(user.id, {
-				reason: `User is banned until ${bannedDataDecrypted.DATE}. Reason: ${bannedDataDecrypted.REASON}`,
-			});
-		}
-	}
-}
+      if (new Date(bannedDataDecrypted.DATE) <= new Date()) {
+        delete data.BANS[fileHandler.findIndexById(member.id)];
+        fileHandler.writeBanUserFile(member.id, data);
+      } else {
+        member.ban({
+          reason: `ಠ_ಠ You are blacklisted from all affiliated servers.`,
+        });
+      }
+    }
+  },
+};

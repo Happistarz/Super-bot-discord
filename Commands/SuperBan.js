@@ -1,5 +1,6 @@
 const { PermissionsBitField } = require('discord.js');
 const { createSuperBanEmbed } = require(global.HELPERS + 'Embeds');
+const { onSuperBanEvent } = require(global.SUPER_EVENTS + 'OnSuperBan');
 
 module.exports = {
 	name: 'superban',
@@ -74,6 +75,13 @@ module.exports = {
 								),
 							],
 						});
+
+						// Call the onSuperBanEvent function
+						onSuperBanEvent(
+							interaction.options.getUser('user'),
+							interaction.options.getString('duration'),
+							interaction.guild.id,
+						);
 					})
 					.catch(error => {
 						console.error(`Failed to ban user: ${error}`);
