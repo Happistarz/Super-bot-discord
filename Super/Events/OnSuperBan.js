@@ -21,6 +21,7 @@ module.exports = {
         NAME: user.username,
         DURATION: duration,
         DATE: new Date().toISOString().split("T")[0],
+        WARNS: []
       };
 
       data.BANS.push({ [user.id]: banDataEncrypt(userBanned) });
