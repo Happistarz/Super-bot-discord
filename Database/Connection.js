@@ -1,82 +1,39 @@
 const mysql = require('mysql');
-const config = require(global.ROOT+'config.json');
-
-// const connection = mysql.createConnection({
-//     host: 'poupli.net',
-//     user: 'superusr',
-//     password: 'sprpass',
-//     database: 'superbot'
-// })
-
-// connection.connect((err) => {
-//     if (err) {
-//         console.log('Error connecting to database');
-//         return;
-//     }
-//     console.log('Connected to database');
-// })
+const config = require(global.ROOT + 'config.json');
 
 module.exports = {
-    connect() {
-        const connection = mysql.createConnection({
-            host: config.DB_HOST,
-            user: config.DB_USER,
-            password: config.DB_PASS,
-            database: config.DB_NAME
-        })
-        connection.connect((err) => {
-            if (err) {
-                console.log('Error connecting to database');
-                return;
-            }
-            console.log('Connected to database');
-        })
-        return connection;
-    },
-    close(connection) {
-        connection.end((err) => {
-            if (err) {
-                console.log('Error closing database connection');
-                return;
-            }
-            console.log('Connection closed');
-        })
-    },
-    // CRUD
-    create(connection, table, data) {
-        connection.query(`INSERT INTO ${table} SET ?`, data, (err, result) => {
-            if (err) {
-                console.log('Error creating data');
-                return;
-            }
-            console.log('Data created');
-        })
-    },
-    read(connection, table, id) {
-        connection.query(`SELECT * FROM ${table} WHERE id = ?`, id, (err, result) => {
-            if (err) {
-                console.log('Error reading data');
-                return;
-            }
-            console.log('Data read');
-        })
-    },
-    update(connection, table, id, data) {
-        connection.query(`UPDATE ${table} SET ? WHERE id = ?`, [data, id], (err, result) => {
-            if (err) {
-                console.log('Error updating data');
-                return;
-            }
-            console.log('Data updated');
-        })
-    },
-    delete(connection, table, id) {
-        connection.query(`DELETE FROM ${table} WHERE id = ?`, id, (err, result) => {
-            if (err) {
-                console.log('Error deleting data');
-                return;
-            }
-            console.log('Data deleted');
-        })
-    }
-}
+	/**
+	 * Connects to the database using the config file
+	 * @returns {Promise<mysql.Connection>} a promise that resolves with the connection
+	 */
+	async connect() {
+		// create the connection
+		const connection = mysql.createConnection({
+			host: config.DB_HOST,
+			user: config.DB_USER,
+			password: config.DB_PASS,
+			database: config.DB_NAME,
+		});
+		// connect to the database
+		connection.connect(err => {
+			if (err) {
+				console.log('[DATABASE] ERROR LOGIN | ', err);
+				return;
+			}
+		});
+		return connection;
+	},
+	/**
+	 * Closes the connection to the database
+	 * @param {mysql.Connection} connection the connection to close
+	 */
+	async close(connection) {
+		// close the connection
+		connection.end(err => {
+			if (err) {
+				console.log('[DATABASE] ERROR CLOSE | ', err);
+				return;
+			}
+		});
+	},
+};

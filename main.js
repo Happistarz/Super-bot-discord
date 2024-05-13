@@ -6,7 +6,7 @@ const config = require('./config.json');
 // get the directories
 const dir = require('./dir.json');
 const root = __dirname;
-global.ROOT = root+ '\\';
+global.ROOT = root+ '/';
 Object.keys(dir).forEach(key => {
 	global[key] = root + dir[key];
 });

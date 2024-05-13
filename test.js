@@ -1,34 +1,23 @@
-const dir = require("./dir.json");
+const dir = require('./dir.json');
 const root = __dirname;
-global.ROOT = root+ '\\';
-Object.keys(dir).forEach((key) => {
-  global[key] = root + dir[key];
+global.ROOT = root + '/';
+Object.keys(dir).forEach(key => {
+	global[key] = root + dir[key];
 });
-// const fileHandler = require(global.SUPER_FUNCTIONS + 'BanFileHandler');
-// const { banDataDecrypt } = require(global.SUPER_FUNCTIONS +
-// 	'BanDataSerializer');
 
-const Connection = require(global.DATABASE + 'Connection');
-
-const connection = Connection.connect();
-
-// console.log(fileHandler.findIndexById('1051177474756714637'));
-// const data = getFileName('1051177474756714637');
-// console.log(data);
-// console.log(banDataEncrypt({ NAME: 'Test', DURATION: '1d', DATE: new Date().toISOString().split('T')[0] }))
-// console.log(banDataDecrypt("U2FsdGVkX1/cA5gOuLHUETvXtPJhPAvg5qF93mzJpLLeE3RZdKeIyPoQakyr2A91y6k12VI4HqSUJZfevUBmX6IU82aALI3yHOzIUCSmaPI="));
-// const user = {
-// 	NAME: 'Test',
-// 	DURATION: '1d',
-// 	DATE: new Date().toISOString().split('T')[0],
-// };
-
-// const data = getBanUserFile('1');
-// data.BANS.push({ 1: banDataEncrypt(user) });
-// console.log(data.BANS);
-
-// const keyHandler = require(global.HELPERS + 'KeyHandler.js');
-
-// keyHandler.genKey().then((key) => {
-//   console.log(key);
-// });
+const { BanUser, newModel } = require(global.DATABASE_MODELS + 'BanUser');
+// const { ModelCollection, listModels } = require(global.DATABASE +
+// 	'ModelCollection');
+const moment = require('moment');
+async function test() {
+	// newModel return a new instance of the model or false if the read fails
+	// const collection = listModels(BanUser, "username = 'happiz'")
+	// 	.then(console.log)
+	// 	.catch(console.error);
+	const banUser = new BanUser();
+	banUser.username = 'happiz';
+	banUser.userid = '18446744073709551615';
+	banUser.warns = 2;
+	await banUser.create().then(console.log).catch(console.error);
+}
+test();

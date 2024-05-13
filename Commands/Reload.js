@@ -1,4 +1,6 @@
 const Discord = require('discord.js');
+const fs = require('fs');
+const path = require('path');
 
 const { createInfoEmbed } = require(global.HELPERS + 'Embeds');
 
@@ -29,10 +31,20 @@ module.exports = {
 			return interaction.reply('That command does not exist.');
 		}
 
-		delete require.cache[require.resolve(`./${commandName}.js`)];
+		const commands = fs.readdirSync(global.COMMANDS);
+		let file = commands.find(
+			file =>
+				path.basename(file, '.js').toLowerCase() === commandName.toLowerCase(),
+		);
+
+		if (!file) {
+			return interaction.reply('That command does not exist.');
+		}
+
+		delete require.cache[require.resolve(global.COMMANDS + file)];
 
 		try {
-			const newCommand = require(`./${commandName}.js`);
+			const newCommand = require(global.COMMANDS + file);
 			interaction.client.commands.set(newCommand.name, newCommand);
 			interaction.reply({
 				embeds: [

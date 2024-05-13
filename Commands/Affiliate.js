@@ -1,7 +1,10 @@
 const Discord = require('discord.js');
 const fs = require('fs');
-const keyHandler = require(global.HELPERS+'KeyHandler.js');
-const { banDataEncrypt } = require(global.SUPER_FUNCTIONS + 'BanDataSerializer');
+const Embeds = require(global.HELPERS + 'Embeds');
+
+const { AffiliatedGuild, newModel } = require(global.DATABASE_MODELS +
+	'AffiliatedGuild');
+const moment = require('moment');
 
 let referee = null;
 let log_channel = null;
@@ -23,7 +26,7 @@ module.exports = {
 			description: 'The channel to send the logs to',
 			type: 'CHANNEL',
 			required: true,
-		}
+		},
 	],
 	async execute(interaction) {
 		const affiliateModal = new Discord.ModalBuilder()
@@ -44,38 +47,43 @@ module.exports = {
 
 		affiliateModal.setComponents(components);
 
+		const guild = await newModel(
+			AffiliatedGuild,
+			`guildid = ${interaction.guild.id}`,
+		);
+
+		// check if the guild is already affiliated
+		if (guild.success) {
+			// found a guild with the same id so alert the user
+			await interaction.reply({
+				content:
+					'This guild is already affiliated, try contacting the referee for more information.',
+				ephemeral: true,
+			});
+			return;
+		}
+
 		await interaction.showModal(affiliateModal);
 	},
 	async onModalSubmit(interaction) {
 		const reason = interaction.fields.getTextInputValue('reason');
 
-		let data = JSON.parse(
-			fs.readFileSync(global.DATA_AFFILIATED + 'PENDING_AFFILIATION.json'),
-		);
+		const affiliatedGuild = new AffiliatedGuild();
+		affiliatedGuild.guildid = interaction.guild.id;
+		affiliatedGuild.guildname = interaction.guild.name;
+		affiliatedGuild.reason = reason;
+		affiliatedGuild.originalmembercount = interaction.guild.memberCount;
+		affiliatedGuild.logchannel = log_channel.id;
+		affiliatedGuild.date = moment().format('YYYY-MM-DD HH:mm:ss');
+		affiliatedGuild.refereeid = referee.id;
+		affiliatedGuild.refereename = referee.username;
 
-		const key = await keyHandler.genKey();
-
-		data.GUILDS.push({
-			KEY: key,
-			GUILD_ID: interaction.guild.id,
-			GUILD_NAME: interaction.guild.name,
-			REASON: banDataEncrypt(reason),
-			MEMBER_COUNT: interaction.guild.memberCount,
-			LOG_CHANNEL: log_channel.id,
-			DATE: new Date().toISOString().slice(0,19).replace("T", " "),
-			REFEREE: {
-				ID: referee.id,
-				NAME: referee.username,
-			},
-		});
-
-		fs.writeFileSync(
-			global.DATA_AFFILIATED + 'PENDING_AFFILIATION.json',
-			JSON.stringify(data, null, 2),
-		);
+		await affiliatedGuild.create();
 
 		interaction.reply({
-			content: `Affiliation demand sent to ${referee} for the reason: ${reason}`,
+			embeds: [
+				Embeds.createAffiliationEmbed(referee, reason, interaction.client),
+			],
 		});
 	},
 };
