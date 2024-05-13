@@ -13,5 +13,6 @@
   "DATA_USER_HISTORY": "/Data/User/History/",
   "DATABASE": "/Database/",
   "DATABASE_MODELS": "/Database/Models/",
-  "ASSETS": "/Assets/"
+  "ASSETS": "/Assets/",
+  "LANG": "/Lang/"
 }
